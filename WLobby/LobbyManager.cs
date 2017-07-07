@@ -29,7 +29,6 @@ namespace xCore
 			Level level2 = Levels.FirstOrDefault(l => l.LevelId.Equals(name, StringComparison.InvariantCultureIgnoreCase));
 			if (level2 == null)
 			{
-				ItemStacks slotData = new ItemStacks();
 				AnvilWorldProvider _provider = null;
 				for (int i = 0; i <= 4; i++)
 				{
@@ -42,19 +41,21 @@ namespace xCore
 
 					if (_provider == null)
 					{
-						var world = new AnvilWorldProvider();
-						world.Initialize();
-						world.MakeAirChunksAroundWorldToCompensateForBadRendering();
-						_provider = world;
+						_provider = new AnvilWorldProvider();
 					}
 					var level = new xCoreLevelLobby(name2, _provider, EntityManager, xCore);
+					level.ViewDistance = 8;
 					level.isGlobalLobby = true;
 					level.Initialize();
+					_provider.Initialize();
+					_provider.MakeAirChunksAroundWorldToCompensateForBadRendering();
 					level.Id = i + 1;
 					//Context.LevelManager.Levels.Add(level);
 					Levels.Add(level);
 					return null;
 				}
+				return null;
+			}else{
 				foreach (Level l in Levels)
 				{
 					if (l.PlayerCount < 50)
@@ -62,11 +63,6 @@ namespace xCore
 						return l;
 					}
 				}
-				if (player != null)
-				{
-					return Levels[0];
-				}
-				return null;
 			}
 			return null;
 		}

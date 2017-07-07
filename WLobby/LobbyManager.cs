@@ -38,19 +38,21 @@ namespace xCore
 					GameMode gameMode = Config.GetProperty("GameMode", GameMode.Survival);
 					Difficulty difficulty = Config.GetProperty("Difficulty", Difficulty.Normal);
 					int viewDistance = Config.GetProperty("ViewDistance", 7);
-
-					if (_provider == null)
+					AnvilWorldProvider world = _provider;
+					if (world == null)
 					{
-						_provider = new AnvilWorldProvider();
+						world = new AnvilWorldProvider();
 					}
-					var level = new xCoreLevelLobby(name2, _provider, EntityManager, xCore);
+					var level = new xCoreLevelLobby(name2, world, EntityManager, xCore);
 					level.ViewDistance = 8;
 					level.isGlobalLobby = true;
 					level.Initialize();
-					_provider.Initialize();
-					_provider.MakeAirChunksAroundWorldToCompensateForBadRendering();
+					if (_provider == null){
+						world.Initialize();
+						world.MakeAirChunksAroundWorldToCompensateForBadRendering();
+						_provider = world;
+					}
 					level.Id = i + 1;
-					//Context.LevelManager.Levels.Add(level);
 					Levels.Add(level);
 					return null;
 				}

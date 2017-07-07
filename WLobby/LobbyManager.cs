@@ -48,7 +48,6 @@ namespace xCore
 					level.isGlobalLobby = true;
 					level.Initialize();
 					if (_provider == null){
-						world.Initialize();
 						world.MakeAirChunksAroundWorldToCompensateForBadRendering();
 						_provider = world;
 					}

@@ -85,14 +85,14 @@ namespace AuthME
 			int Time = int.Parse(query["time"]);
 			if (Time != 0)
 			{
-				if (Time < Database.UnixTime())
+				if (Time < xCoreGames.UnixTime())
 				{
 					Database.Update("DELETE FROM banlist WHERE player = '" + player.Username.ToLower() + "'");
 					player.SendMessage("Тебя разбанили!!!");
 					return true;
 				}
 				else {
-					int time = (Convert.ToInt32(query["time"]) - Database.UnixTime()) / 86400;
+					int time = (Convert.ToInt32(query["time"]) - xCoreGames.UnixTime()) / 86400;
 					player.Disconnect("§cВы в бане!\n Забанил: " + query["admin"] + "§c\n До разабана:\n §2" + time + " §cдней\n Причина:§9 " + query["reason"], true);
 					return false;
 				}

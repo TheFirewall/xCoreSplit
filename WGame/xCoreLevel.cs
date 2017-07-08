@@ -63,7 +63,7 @@ namespace xCore
 
 		public bool Lock { get; set; } = false;
 
-		public xCoreLevel(IWorldProvider worldProvider, EntityManager entitymanager, xCoreInterface game, MapInfo map, int id) : base(null, game.NameGame + id, worldProvider, entitymanager, GameMode.Survival, (MiNET.Worlds.Difficulty)2, 7)
+		public xCoreLevel(IWorldProvider worldProvider, EntityManager entitymanager, xCoreInterface game, MapInfo map, int id) : base(null, game.NameGame + id, worldProvider, entitymanager, GameMode.Survival, (Difficulty)2, 7)
 		{
 			Game = game;
 			Id = id;
@@ -83,16 +83,13 @@ namespace xCore
 		public override void AddPlayer(Player newPlayer, bool spawn)
 		{
 			base.AddPlayer(newPlayer, spawn);
-			//lock (((xPlayer)newPlayer).DynamicInvSync)
-			//	newPlayer.DynInventory = null;
 			Player removed;
 			TempPlayers.TryRemove(newPlayer, out removed);
 			Game.PlayerCount++;
 			newPlayer.ClearPopups();
 			Task.Run(delegate
 			{
-				//lock(((xPlayer)newPlayer)._playerLock)
-				//{
+
 				try
 				{
 					
@@ -102,7 +99,7 @@ namespace xCore
 					Log.Error("Playerexeption add: " + exeption.Message);
 					Log.Info("Playerexeption add: " + exeption.Message);
 				}
-				//}
+
 			});
 			foreach (Player pl in GetSpawnedPlayers())
 				BroadcastTip(pl, newPlayer.Username + " §3joined §e(" + (Players.Count()) + "/" + Slots + ")");

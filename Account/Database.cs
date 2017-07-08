@@ -46,12 +46,12 @@ namespace AuthME
 
 		public Database(Account a)
 		{
-			Connect = "server=127.0.0.1;" +
-				"database=cristalix;uid=root;" +
-				"pwd=8904525;" +
+			Connect = "server=*******;" +
+				"database=********;uid=****;" +
+				"pwd=******;" +
 				"Pooling=true;" +
 				"Min Pool Size=10;" +
-				"Max Pool Size=50;";// +
+				"Max Pool Size=100;";// +
 									//"Connection Lifetime=0";
 			Auth = a;
 		}
@@ -118,55 +118,6 @@ namespace AuthME
 				}
 			});
 		}
-
-		/*public List<object[]> ExecuteQuery(string query)
-        {
-            List<object[]> rows = new List<object[]>();
-            try
-            {
-                MySqlCommand cmd = new MySqlCommand(query, mysql_connect);
-
-                MySqlDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    object[] row = new object[reader.FieldCount];
-                    for (int i = 0; i < reader.FieldCount; i++)
-                    {
-                        row[i] = reader[i];
-                    }
-                    rows.Add(row);
-                }
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.ToString());
-            }
-            return rows;            
-        }
-
-		//Select statement
-		public List< string >[] Select(string query)
-		{
-
-			//Create a list to store the result
-
-			MySqlCommand cmd = new MySqlCommand(query, mysql_connect);
-			MySqlDataReader dataReader = cmd.ExecuteReader();
-			List< string >[] rows = new List< string >[dataReader.FieldCount];
-			while (dataReader.Read())
-			{
-				for (int i = 0; i < dataReader.FieldCount; i++)
-				{
-					rows[i].Add(dataReader[i] + "");
-
-				}
-			}
-
-			dataReader.Close();
-			return rows;
-		}*/
 
 		public DataTable MultipleQuery(string query, string nametable, bool isQuery = true)
 		{
@@ -399,14 +350,6 @@ namespace AuthME
 					await cmd.ExecuteNonQueryAsync();
 				}
 			}
-		}
-
-		public static int UnixTime()
-		{
-
-			int unixtime = Convert.ToInt32((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds);
-
-			return unixtime;
 		}
 	}
 }

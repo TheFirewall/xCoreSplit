@@ -499,9 +499,9 @@ namespace xCore
 			PlayerData.ActionTime = DateTime.UtcNow;
 			if (PlayerData.muted)
 			{
-				if ((long)PlayerData.mute_time > Database.UnixTime())
+				if ((long)PlayerData.mute_time > xCoreGames.UnixTime())
 				{
-					long mute = (long)PlayerData.mute_time - Database.UnixTime();
+					long mute = (long)PlayerData.mute_time - xCoreGames.UnixTime();
 					SendMessage(string.Format(PlayerData.lang.get("bm.mute.blocking"), mute));
 					return;
 				}

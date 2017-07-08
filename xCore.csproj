@@ -96,7 +96,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Macross.cs" />
+    <Compile Include="xCoreMacross.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Account\Account.cs" />
     <Compile Include="Account\AccountManager.cs" />
@@ -118,7 +118,6 @@
     <Compile Include="Account\MySQL\userdata.cs" />
     <Compile Include="Entity\BossBar.cs" />
     <Compile Include="Entity\NPC.cs" />
-    <Compile Include="Entity\TopNPC.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

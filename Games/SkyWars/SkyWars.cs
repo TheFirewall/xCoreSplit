@@ -39,8 +39,7 @@ namespace xCore
 		public xCoreGames Core { get; set; }
 		public LevelPoolGame Pool { get; set; }
 		public PluginContext Context { get; set; }
-		public xCoreTop Top { get; set; }
-
+	
 		public int PlayerCount { get; set; } = 0;
 
 		public bool CloseGame { get; set; }
@@ -257,10 +256,6 @@ namespace xCore
 			{
 				if (level.Time > 0)
 				{
-					/*foreach (Player player in level.GetSpawnedPlayers())
-					{
-						level.BroadcastPopup(player, level.TimeString);
-					}*/
 					Core.BossBar.SetNameTag(level, level.TimeString);
 				}
 				else if (level.Time == 0)
@@ -269,10 +264,8 @@ namespace xCore
 					Core.BossBar.SetNameTag(level, "Deathmatch");
 					foreach (xPlayer player in level.GetSpawnedPlayers())
 					{
-						//level.BroadcastPopup(player, level.TimeString);
 						player.SendMessage(Prefix + player.PlayerData.lang.get("sg.timer.dm.start"));
 						player.SetNoAi(false);
-						//player.NoAi = false;
 					}
 				}
 				Player[] Survided = level.GetSurvivalPlayers();
@@ -319,13 +312,6 @@ namespace xCore
 									return;
 								}
 							}
-							/*foreach (Player player in level.GetSpawnedPlayers())
-							{
-								if (player.DynInventory == null)
-								{
-									level.BroadcastPopup(player, level.TimeString);
-								}
-							}*/
 							break;
 					}
 					Core.BossBar.SetNameTag(level, level.TimeString);
@@ -336,10 +322,6 @@ namespace xCore
 					foreach (xPlayer player in level.GetSpawnedPlayers())
 					{
 						Core.BossBar.SendName(player, string.Format(player.PlayerData.lang.get("xcore.start.noplayers"), MinPlayers));
-						/*if (player.DynInventory == null)
-						{
-							level.BroadcastPopup(player, string.Format(player.PlayerData.lang.get("sw.start.timer.noplayers"), xCoreGames.MinPlayers));
-						}*/
 					}
 					level.Time = 85;
 					level.PreStarted = false;
@@ -367,9 +349,6 @@ namespace xCore
 				if (Killer != null)
 				{
 					Player[] players = level.GetSpawnedPlayers();
-					//Core.UpdateStats(Killer, 5, 1, Booster, true);
-					//Core.UpdateData(Killer, "kills", 1, this);
-					//Core.UpdateData(Killed, "deaths", 1, this);
 					level.Points[Killer.Username]++;
 					Killer.SendTitle(null, TitleType.AnimationTimes, 6, 6, 20 * 2);
 					switch (level.Points[Killer.Username])
@@ -405,9 +384,6 @@ namespace xCore
 				if (Killer != null)
 				{
 					Player[] players = level.GetSpawnedPlayers();
-					//Core.UpdateStats(Killer, 5, 1, Booster, true);
-					//Core.UpdateData(Killer, "kills", 1, this);
-					//Core.UpdateData(Killed, "deaths", 1, this);
 					foreach (xPlayer pl in players)
 						pl.SendMessage(Prefix + string.Format(pl.PlayerData.lang.get("sw.death.voidp"), Killed.Username, Killer.Username));
 				}
@@ -418,7 +394,7 @@ namespace xCore
 				}
 				if (level.Status != Status.Finish || level.Status != Status.Start)
 				{
-					//Core.UpdateData(Killed, "deaths", 1, this);
+					
 				}
 			}
 			Killed.DropInventory();
@@ -440,7 +416,6 @@ namespace xCore
 		{
 			int i = 0;
 			List<PlayerLocation> loc = SpawnPoints[level.Map.Name];
-			Log.Warn(loc);
 			Player[] pls = level.GetSpawnedPlayers();
 			foreach (Player player in pls)
 			{
@@ -534,8 +509,6 @@ namespace xCore
 			{
 				Core.BossBar.SetNameTag(level, pl.Username + " win!");
 				pl.SendMessage(Prefix + pl.PlayerData.lang.get("sw.finish.win"));
-				//Core.UpdateStats(pl, 50, 10, Booster);
-				//Core.UpdateData(pl, "wins", 1, this);
 			}
 			level.BroadcastMessage(st);
 			level.Time = 10;

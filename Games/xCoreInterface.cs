@@ -28,8 +28,6 @@ namespace xCore
 
 		LevelPoolGame Pool { get; set; }
 
-		xCoreTop Top { get; set; }
-
 		JObject conf { get; set; }
 
 		int PlayerCount { get; set; }

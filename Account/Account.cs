@@ -112,7 +112,7 @@ namespace AuthME
 			Dictionary<string, string> userdata = Query("SELECT user_low FROM userdata WHERE user_low='" + player.Username.ToLower() + "'");
 			if (userdata == null)
 			{
-				//Register(player, GetPasswordHash(string.Join("", password)));
+				//Register code
 			}
 			else
 			{
@@ -137,7 +137,6 @@ namespace AuthME
         private string GetPasswordHash(string password)
         {
 			string md5 = GenerateMD5Hash(password);
-			//string md52 = GenerateMD5Hash (md5);
 			return md5;
         }
 
@@ -164,136 +163,8 @@ namespace AuthME
 				{
 					dic.Add(c.ColumnName, "null");
 					dic[c.ColumnName] = sql.Rows[0].Field<Object>(c.ColumnName).ToString();
-					//Log.Warn(c.ColumnName);
-					//Log.Warn(sql.Rows[0].Field<Object>(c.ColumnName).ToString());
 				}
 				sql.Dispose();
-				return dic.Count > 0 ? dic : null;
-			}
-			return null;
-		}
-
-		/*public ConcurrentDictionary<string, string> Query(string sql1)
-		{
-			DataTable sql = Database.Query(sql1);
-			var timelevel = new Stopwatch();
-			timelevel.Start();
-			if (sql != null)
-			{
-				ConcurrentDictionary<string, string> dic = new ConcurrentDictionary<string, string>();
-				foreach (DataColumn c in sql.Columns)
-				{
-					dic.TryAdd(c.ColumnName, "null");
-				}
-				foreach (string v in dic.Keys)
-				{
-					dic[v] = sql.Rows[0].Field<Object>(v).ToString();
-				}
-				sql.Dispose();
-				timelevel.Stop();
-				return dic.Count > 0 ? dic : null;
-			}
-			return null;
-		}*/
-
-		public List<Dictionary<string, string>> MultipleQuery(string sql1, string nametable)
-		{
-			DataTable dt = Database.MultipleQuery(sql1, nametable);
-			List<Dictionary<string, string>> listdic = new List<Dictionary<string, string>>();
-			if (dt != null && dt.Rows.Count != 0)
-			{
-				foreach (DataRow d in dt.Rows)
-				{
-					Dictionary<string, string> dic = new Dictionary<string, string>();
-					foreach (DataColumn c in dt.Columns)
-					{
-						dic.Add(c.ColumnName, "null");
-						dic[c.ColumnName] = d.Field<Object>(c.ColumnName).ToString();
-					}
-					listdic.Add(dic);
-				}
-				return listdic.Count > 0 ? listdic : null;
-			}
-			return null;
-		}
-
-		public async Task<List<ConcurrentDictionary<string, string>>> MultipleQueryAsync(string sql1, string nametable)
-		{
-			DataTable dt = await Database.MultipleQueryAsync(sql1, nametable);
-			List<ConcurrentDictionary<string, string>> listdic = new List<ConcurrentDictionary<string, string>>();
-			if (dt != null && dt.Rows.Count != 0)
-			{
-				foreach (DataRow d in dt.Rows)
-				{
-					ConcurrentDictionary<string, string> dic = new ConcurrentDictionary<string, string>();
-					foreach (DataColumn c in dt.Columns)
-					{
-						dic.TryAdd(c.ColumnName, "null");
-					}
-					foreach (string v in dic.Keys)
-					{
-						dic[v] = d.Field<Object>(v).ToString();
-					}
-					listdic.Add(dic);
-				}
-				return listdic.Count > 0 ? listdic : null;
-			}
-			return null;
-		}
-
-		public async Task<ConcurrentDictionary<string, string>> QueryAsync(string sql1)
-		{
-			DataTable sql = await Database.QueryAsync(sql1);
-			if (sql != null)
-			{
-				ConcurrentDictionary<string, string> dic = new ConcurrentDictionary<string, string>();
-				foreach (DataColumn c in sql.Columns)
-				{
-					dic.TryAdd(c.ColumnName, sql.Rows[0].Field<Object>(c.ColumnName).ToString());
-				}
-				/*foreach (string v in dic.Keys)
-				{
-					dic[v] = sql.Rows[0].Field<Object>(v).ToString();
-				}*/
-				return dic.Count > 0 ? dic : null;
-			}
-			return null;
-		}
-
-		public Dictionary<string, int> QueryInt(string sql1)
-		{
-			DataTable sql = Database.Query(sql1);
-			if (sql != null)
-			{
-				Dictionary<string, int> dic = new Dictionary<string, int>(sql.Columns.Count);
-				foreach (DataColumn c in sql.Columns)
-				{
-					dic.Add(c.ColumnName, int.Parse(sql.Rows[0].Field<Object>(c.ColumnName).ToString()));
-					//dic[c.ColumnName] = int.Parse(sql.Rows[0].Field<Object>(c.ColumnName).ToString());
-				}
-				/*foreach (string v in dic.Keys)
-				{
-					dic[v] = int.Parse(sql.Rows[0].Field<Object>(v).ToString());
-				}*/
-				return dic.Count > 0 ? dic : null;
-			}
-			return null;
-		}
-
-		public async Task<ConcurrentDictionary<string, int>> QueryAsyncInt(string sql1)
-		{
-			DataTable sql = await Database.QueryAsync(sql1);
-			if (sql != null)
-			{
-				ConcurrentDictionary<string, int> dic = new ConcurrentDictionary<string, int>();
-				foreach (DataColumn c in sql.Columns)
-				{
-					dic.TryAdd(c.ColumnName, 0);
-				}
-				foreach (string v in dic.Keys)
-				{
-					dic[v] = int.Parse(sql.Rows[0].Field<Object>(v).ToString());
-				}
 				return dic.Count > 0 ? dic : null;
 			}
 			return null;
@@ -303,12 +174,18 @@ namespace AuthME
 		{
 			foreach (var pl in Context.Server.ServerInfo.PlayerSessions)
 			{
-				if (pl.Value.MessageHandler is Player)
+				if (pl.Key != null && pl.Value != null)
 				{
-					Player PlayerSession = pl.Value.MessageHandler as Player;
-					if (PlayerSession.Username.ToLower() == username.ToLower())
+					if (pl.Value.MessageHandler != null)
 					{
-						return PlayerSession;
+						if (pl.Value.MessageHandler is Player)
+						{
+							Player PlayerSession = pl.Value.MessageHandler as Player;
+							if (PlayerSession.Username.ToLower() == username.ToLower())
+							{
+								return PlayerSession;
+							}
+						}
 					}
 				}
 			}

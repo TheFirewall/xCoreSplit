@@ -33,8 +33,6 @@ namespace xCore
 
 		public List<xCoreVillData> Villagers { get; set; }
 
-		public object Songs { get; set; }
-
 		public Boss BossBar { get; set; }
 
 		public static int StartTime { get; set; } = 50;
@@ -43,7 +41,6 @@ namespace xCore
 		{
 			Log.Info("Startup begun.");
 
-			//server.MotdProvider = new CrMotdProvider();
 			server.PlayerFactory = new xPlayerFactory() { xCore = this };
 			server.LevelManager = new LobbyManager(this);
 
@@ -79,22 +76,9 @@ namespace xCore
 			//Log.Info("[Cristalix] PartyManager enabled");
 			Games = new List<xCoreInterface>();
 			Games.Add(new xCoreSkyWars(this, Context));
-			//Games.Add(new xCoreBedWars(this, Context));
-			//Games.Add(new xCoreHiddenJoker(this, Context));
-			//Games.Add(new xCoreTNTRun(this, Context));
-			//Games.Add(new xCoreBlockHunt(this, Context));
-			//Games.Add(new xCoreBlockParty(this, Context));
-			//Games.Add(new xCoreSurvivalGames(this, Context));
-			//Chest = new Chests(this);
 			Context.Server.LevelManager.GetLevel(null, "overworld");
 			Log.Info("[Cristalix] CChest enabled");
 			LoadLobby();
-			//ServersMenu();
-			//ProfileMenu();
-			//ChestFun();
-			//Settings();
-			Log.Info("[Cristalix] AntiCheat enabled");
-			//Songs = new PlayNoteBlockSong(Context.Server.LevelManager.Levels.ToArray());
 			BossBar = new Boss(Context.Server.LevelManager.Levels[0]);
 			Context.Server.LevelManager.EntityManager.AddEntity(BossBar);
 			Log.Info("[Cristalix] xCore enabled! Version 2.0!");
@@ -155,13 +139,7 @@ namespace xCore
 			Log.Info("Stopping MiNET");
 		}
 
-		[Command(Name = "hub")]
-		public void SpawnHub(Player player)
-		{
-			SpawnLobby(player);
-		}
-
-		[Command(Name = "lobby")]
+		[Command(Name = "lobby", Aliases = new[] { "hub", "spawn" })]
 		public void SpawnLobby(Player player)
 		{
 			if (player.Level is xCoreLevel)
@@ -178,8 +156,6 @@ namespace xCore
 
 				player.IsInvisible = false;
 				player.NameTag = player.Username;
-				//lock (((xPlayer)player).DynamicInvSync)
-				//	player.DynInventory = null;
 				player.HealthManager.MaxHealth = 200;
 				player.HealthManager.ResetHealth();
 				((xCoreHungerManager)player.HungerManager).SetProcess();
@@ -212,31 +188,17 @@ namespace xCore
 		{
 			player.NameTag = player.Username;
 			player.DespawnFromPlayers(player.Level.GetSpawnedPlayers());
-			//player.IsInvisible = true;
 			player.AllowFly = true;
 			player.IsSpectator = true;
-			//player.SetGameMode(GameMode.Spectator);
 			player.GameMode = GameMode.Spectator;
 			((xCoreHungerManager)player.HungerManager).SetProcess();
-			//lock (((xPlayer)player).DynamicInvSync)
-			//	player.DynInventory = null;
 			for (int i = 0; i < player.Inventory.Slots.Count; ++i)
 				if (player.Inventory.Slots[i] == null || player.Inventory.Slots[i].Id != 0) player.Inventory.Slots[i] = new ItemAir();
 			if (player.Inventory.Helmet.Id != 0) player.Inventory.Helmet = new ItemAir();
 			if (player.Inventory.Chest.Id != 0) player.Inventory.Chest = new ItemAir();
 			if (player.Inventory.Leggings.Id != 0) player.Inventory.Leggings = new ItemAir();
 			if (player.Inventory.Boots.Id != 0) player.Inventory.Boots = new ItemAir();
-			//Item item = ItemFactory.GetItem(378);
-			//item.ExtraData = new NbtCompound { new NbtCompound("display") { new NbtString ("Name", player.PlayerData.lang.get("xcore.returntohub")), new NbtInt ("Action", 4)}};
-			/*Item item2 = ItemFactory.GetItem(324);
-			item2.ExtraData = new NbtCompound {
-					new NbtCompound("display") {
-					new NbtString ("Name", player.PlayerData.lang.get("xcore.newgame")),
-					new NbtInt ("Action", 4)
-					}
-			};
-			player.Inventory.Slots[2] = item2;*/
-			//player.Inventory.Slots[4] = item;
+			//
 			player.BroadcastSetEntityData();
 			player.SendAdventureSettings();
 			player.SendPlayerInventory();
@@ -257,17 +219,10 @@ namespace xCore
 		public Player player { get; set; }
 		//Игровые данные(отдельного мини режима)
 		public string Class { get; set; } = "default";
-
-		public int Perk { get; set; } = 0;
-		public int PerkLvl { get; set; } = 0;
 		//Данные даты для разных режимов
 		public DateTime Date { get; set; }
 		//Данные для для разных режимов
 		public int Count { get; set; } = 0;
-		//Данные даблджампов на TNTRun
-		public int DoubleJump { get; set; } = 0;
-		//Данные предметов покупки на SurvivalGames
-		public List<Item> Items { get; set; }
 		//Изменение на редактирование базы
 		public bool Changed = false;
 
@@ -287,6 +242,72 @@ namespace xCore
 			this.player = player;
 			Data = data;
 			Date = DateTime.UtcNow;
+		}
+	}
+
+	public static class StringArray
+	{
+		public static string ToLower(this string[] args)
+		{
+			string line = "";
+			int i = 0;
+			foreach (string s in args)
+			{
+				if (i++ == 0)
+				{
+					line += s.ToLower();
+					continue;
+				}
+				line += ", " + s.ToLower();
+			}
+			return line;
+		}
+	}
+
+	public static class ListHelper
+	{
+
+		public static string CenterName(this List<string> args)
+		{
+
+			int list = 1;
+			foreach (string line in args)
+			{
+				string ss = "";
+				ss += line;
+
+				for (int i = 0; i <= 9; i++)
+				{
+					ss = ss.Replace("§" + i, "");
+				}
+				string sss = "";
+				sss = ss.Replace("§a", "").Replace("§r", "").Replace("§l", "").Replace("§b", "").Replace("§c", "").Replace("§d", "").Replace("§e", "").Replace("§f", "").Replace("\n", "");
+				if (list <= sss.Length)
+				{
+					list = sss.Length;
+				}
+			}
+			string s = "";
+			foreach (string line in args)
+			{
+				string ss = "";
+				ss += line;
+
+				for (int i = 0; i <= 9; i++)
+				{
+					ss = ss.Replace("§" + i, "");
+				}
+				string sss = "";
+				sss = ss.Replace("§a", "").Replace("§r", "").Replace("§l", "").Replace("§b", "").Replace("§c", "").Replace("§d", "").Replace("§e", "").Replace("§f", "").Replace("\n", "");
+
+				if (sss.Length <= list)
+				{
+					int min = list - sss.Length;
+					String prob = new String(' ', min / 2);
+					s += prob + line + prob + "\n";
+				}
+			}
+			return s;
 		}
 	}
 }

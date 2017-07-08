@@ -138,30 +138,6 @@ namespace xCore
 			}
 		}
 
-		protected override bool AcceptPlayerMove(McpeMovePlayer message, bool isOnGround, bool isFlyingHorizontally)
-		{
-			if (CooldownTick-- > 0) return true;
-			if (!isOnGround)
-			{
-				if (isFlyingHorizontally)
-				{
-					//if (!message.onGround)
-					//{
-						if (!IsSpectator)
-						{
-							if (message.y <= 256)
-							{
-								Disconnect("Error #375! Flight is not allow.");
-								//Level.BroadcastMessage(Username + " возможно читер!!!");
-								return true;
-							}
-						}
-					//}
-				}
-			}
-			return true;
-		}
-
 		public override void HandleMcpeRequestChunkRadius(McpeRequestChunkRadius message)
 		{
 			base.HandleMcpeRequestChunkRadius(message);

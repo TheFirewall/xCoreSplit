@@ -23,10 +23,6 @@ namespace xCore
 
 		public xCoreGames Core { get; set; }
 
-		//public List<Gadget> Gadgets = new List<Gadget>();
-
-		//public ChestInfo Chest { get; set; }
-
 		public xCoreLevelLobby(string levelId, IWorldProvider worldProvider,EntityManager entitymanager, xCoreGames core) : base(null, levelId, worldProvider, entitymanager)
 		{
 			Core = core;
